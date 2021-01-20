@@ -22,7 +22,7 @@ jobs:
       - name: Test packaging
         run: bundle exec gem build databricks.gemspec
 
-  package:
+  semantic_release:
     needs: test
     runs-on: ubuntu-latest
     steps:
