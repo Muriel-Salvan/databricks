@@ -1,14 +1,15 @@
-require 'databricks/domain'
+require 'databricks/resource'
 
 module Databricks
 
-  module Domains
+  module Resources
 
     # API entry point
     # cf. https://docs.databricks.com/dev-tools/api/latest/index.html
-    class Root < Domain
+    class Root < Resource
 
-      sub_domains %i[
+      sub_resources %i[
+        clusters
         dbfs
         jobs
       ]

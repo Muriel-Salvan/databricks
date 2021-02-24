@@ -1,5 +1,6 @@
-require 'databricks/domains/root'
+require 'databricks/connector'
 require 'databricks/resource'
+require 'databricks/resources/root'
 
 module Databricks
 
@@ -9,9 +10,9 @@ module Databricks
   # * *host* (String): Host to connect to
   # * *token* (String): Token to be used in th API
   # Result::
-  # * Domains::Root: The root domain of the API
+  # * Resources::Root: The root resource of the API
   def self.api(host, token)
-    Domains::Root.new(Resource.new(host, token))
+    Resources::Root.new(Connector.new(host, token))
   end
 
 end

@@ -26,7 +26,7 @@ gem 'databricks'
 
 ## Usage
 
-The API is articulated around a domains hierarchy mapping the official Databricks API documentation.
+The API is articulated around resources hierarchy mapping the official Databricks API documentation.
 It is accessed using the `Databricks#api` method, giving both the host to connect to and an API token.
 
 Example to list the root path of the DBFS storage of an instance:
@@ -35,7 +35,7 @@ require 'databricks'
 
 databricks = Databricks.api('https://my_databricks_instance.my_domain.com', '123456789abcdef123456789abcdef')
 databricks.dbfs.list('/').each do |file|
-  puts "Found DBFS file: #{file}"
+  puts "Found DBFS file: #{file.path}"
 end
 ```
 ## Change log

@@ -1,12 +1,10 @@
-require 'databricks/domain'
-
 module Databricks
 
-  module Domains
+  module Resources
 
     # Provide the DBFS API
     # cf. https://docs.databricks.com/dev-tools/api/latest/dbfs.html
-    class Dbfs < Domain
+    class Dbfs < Resource
 
       # List a path
       #
@@ -15,12 +13,7 @@ module Databricks
       # Result::
       # * Array<String>: List of DBFS paths
       def list(path)
-        @resource.get_json(
-          'dbfs/list',
-          {
-            path: path
-          }
-        )['files'].map { |file_info| file_info['path'] }
+        (get_json('dbfs/list', { path: path })['files'] || []).map { |properties| new_resource(:file, properties) }
       end
 
       # Put a new file
@@ -29,12 +22,27 @@ module Databricks
       # * *path* (String): Path to the file to create
       # * *local_file* (String): Path to the local file to put
       def put(path, local_file)
-        @resource.post(
+        post(
           'dbfs/put',
           {
             path: path,
-            contents: File.new(local_file, 'rb'),
+            contents: ::File.new(local_file, 'rb'),
             overwrite: true
+          }
+        )
+      end
+
+      # Delete a path
+      #
+      # Parameters::
+      # * *path* (String): Path to delete
+      # * *recursive* (Boolean): Do we delete recursively? [default: false]
+      def delete(path, recursive: false)
+        post_json(
+          'dbfs/delete',
+          {
+            path: path,
+            recursive: recursive
           }
         )
       end
