@@ -11,6 +11,7 @@ module Databricks
       sub_resources %i[
         clusters
         dbfs
+        instance_pools
         jobs
       ]
 

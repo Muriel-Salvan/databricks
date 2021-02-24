@@ -38,6 +38,83 @@ databricks.dbfs.list('/').each do |file|
   puts "Found DBFS file: #{file.path}"
 end
 ```
+
+Here is a simple code snippet showing the most common examples of the API.
+
+```ruby
+require 'databricks'
+
+databricks = Databricks.api('https://my_databricks_instance.my_domain.com', '123456789abcdef123456789abcdef')
+
+# ===== DBFS
+
+databricks.dbfs.list('/').each do |file|
+  puts "Found DBFS file: #{file.path} (size: #{file.file_size})"
+  puts 'It is a directory' if file.is_dir
+end
+
+databricks.dbfs.put('/dbfs_path/to/file.txt', 'local_file.txt')
+databricks.dbfs.delete('/dbfs_path/to/file.txt')
+
+# ===== Clusters
+
+databricks.clusters.each do |cluster|
+  puts "Found cluster named #{cluster.cluster_name} with id #{cluster.cluster_id} using Spark #{cluster.spark_version} in state #{cluster.state}"
+end
+cluster = databricks.clusters.get('my-cluster-id')
+
+new_cluster = databricks.clusters.create(
+  cluster_name: 'my-test-cluster',
+  spark_version: '7.1.x-scala2.12',
+  node_type_id: 'Standard_DS3_v2',
+  driver_node_type_id: 'Standard_DS3_v2',
+  num_workers: 1,
+  creator_user_name: 'me@my_domain.com'
+)
+new_cluster.edit(num_workers: 2)
+new_cluster.delete
+
+# ===== Jobs
+
+databricks.jobs.list.each do |job|
+  puts "Found job with id #{job.job_id}"
+end
+
+new_job = job.create(
+  name: 'My new job',
+  new_cluster: {
+    spark_version: '7.3.x-scala2.12',
+    node_type_id: 'r3.xlarge'
+    num_workers: 10
+  },
+  libraries: [
+    {
+      jar: 'dbfs:/my-jar.jar'
+    }
+  ],
+  timeout_seconds: 3600,
+  spark_jar_task: {
+    main_class_name: 'com.databricks.ComputeModels'
+  }
+)
+
+# ===== Instance pools
+
+databricks.instance_pools.each do |instance_pool|
+  puts "Found instance pool named #{instance_pool.instance_pool_name} with id #{instance_pool.instance_pool_id} and max capacity #{instance_pool.max_capacity}"
+end
+instance_pool = databricks.instance_pools.get('my-instance-pool-id')
+
+new_instance_pool = databricks.instance_pools.create(
+  instance_pool_name: 'my-pool',
+  node_type_id: 'i3.xlarge',
+  min_idle_instances: 10
+)
+new_instance_pool.edit(min_idle_instances: 5)
+new_instance_pool.delete
+
+```
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
