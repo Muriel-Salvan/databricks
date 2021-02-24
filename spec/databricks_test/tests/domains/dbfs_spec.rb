@@ -46,14 +46,14 @@ describe Databricks::Resources::Dbfs do
   it 'deletes paths' do
     stub_request(:post, 'https://my_databricks_instance.my_domain.com/api/2.0/dbfs/delete').
       with(body: { path: '/my_test/path', recursive: false }).
-      to_return(body: '{}')
+      to_return(body: {}.to_json)
     expect { @api.delete('/my_test/path') }.not_to raise_error
   end
 
   it 'deletes paths recursively' do
     stub_request(:post, 'https://my_databricks_instance.my_domain.com/api/2.0/dbfs/delete').
       with(body: { path: '/my_test/path', recursive: true }).
-      to_return(body: '{}')
+      to_return(body: {}.to_json)
     expect { @api.delete('/my_test/path', recursive: true) }.not_to raise_error
   end
 
