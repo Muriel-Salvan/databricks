@@ -1,7 +1,7 @@
 require 'tempfile'
-require 'databricks/domains/dbfs'
+require 'databricks/resources/dbfs'
 
-describe Databricks::Domains::Dbfs do
+describe Databricks::Resources::Dbfs do
 
   before(:each) do
     @api = Databricks.api('https://my_databricks_instance.my_domain.com', 'my_test_token').dbfs
@@ -16,7 +16,7 @@ describe Databricks::Domains::Dbfs do
           { path: 'test_file_2' }
         ]
       }.to_json)
-    expect(@api.list('/my_test/path')).to eq %w[test_file_1 test_file_2]
+    expect(@api.list('/my_test/path').map(&:path).sort).to eq %w[test_file_1 test_file_2].sort
   end
 
   it 'puts a new file' do
@@ -41,6 +41,20 @@ describe Databricks::Domains::Dbfs do
         to_return(body: '')
       expect { @api.put('/my_test/path', temp_file.path) }.not_to raise_error
     end
+  end
+
+  it 'deletes paths' do
+    stub_request(:post, 'https://my_databricks_instance.my_domain.com/api/2.0/dbfs/delete').
+      with(body: { path: '/my_test/path', recursive: false }).
+      to_return(body: {}.to_json)
+    expect { @api.delete('/my_test/path') }.not_to raise_error
+  end
+
+  it 'deletes paths recursively' do
+    stub_request(:post, 'https://my_databricks_instance.my_domain.com/api/2.0/dbfs/delete').
+      with(body: { path: '/my_test/path', recursive: true }).
+      to_return(body: {}.to_json)
+    expect { @api.delete('/my_test/path', recursive: true) }.not_to raise_error
   end
 
 end

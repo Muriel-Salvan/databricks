@@ -23,7 +23,7 @@ describe 'The entry point of the API' do
           ]
         }.to_json
       )
-    expect(api.dbfs.list('/')).to eq %w[test_file_1 test_file_2]
+    expect(api.dbfs.list('/').map(&:path).sort).to eq %w[test_file_1 test_file_2].sort
   end
 
 end
