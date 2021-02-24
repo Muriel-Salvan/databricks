@@ -9,13 +9,15 @@ module Databricks
       # List clusters
       #
       # Result::
-      # * Array<Hash>: List of clusters information
+      # * Array<Cluster>: List of clusters
       def list
         (get_json('clusters/list')['clusters'] || []).map { |properties| new_resource(:cluster, properties) }
       end
 
       # Get a cluster based on its cluster_id
       #
+      # Parameters::
+      # * *cluster_id* (String): The cluster id to get
       # Result::
       # * Cluster: The cluster
       def get(cluster_id)
@@ -26,6 +28,8 @@ module Databricks
       #
       # Parameters::
       # * *properties* (Hash<Symbol,Object>): Properties to create the cluster
+      # Result::
+      # * Cluster: The new cluster created
       def create(**properties)
         cluster = new_resource(:cluster, post_json('clusters/create', properties))
         cluster.add_properties(properties)

@@ -9,7 +9,7 @@ module Databricks
       # List jobs
       #
       # Result::
-      # * Array<Hash>: List of jobs information
+      # * Array<Job>: List of jobs information
       def list
         (get_json('jobs/list')['jobs'] || []).map { |properties| new_resource(:job, properties) }
       end
@@ -18,6 +18,8 @@ module Databricks
       #
       # Parameters::
       # * *properties* (Hash<Symbol,Object>): Properties to create the job
+      # Result::
+      # * Job: The new job created
       def create(**properties)
         job = new_resource(:job, post_json('jobs/create', properties))
         job.add_properties(properties)

@@ -7,15 +7,19 @@ describe Databricks::Resources::Root do
   end
 
   it 'gives access to the dbfs sub-resource' do
-    expect(@api.dbfs).not_to eq nil
+    expect(@api.dbfs.class).to eq Databricks::Resources::Dbfs
   end
 
   it 'gives access to the jobs sub-resource' do
-    expect(@api.jobs).not_to eq nil
+    expect(@api.jobs.class).to eq Databricks::Resources::Jobs
   end
 
   it 'gives access to the clusters sub-resource' do
-    expect(@api.clusters).not_to eq nil
+    expect(@api.clusters.class).to eq Databricks::Resources::Clusters
+  end
+
+  it 'gives access to the instance_pools sub-resource' do
+    expect(@api.instance_pools.class).to eq Databricks::Resources::InstancePools
   end
 
 end
