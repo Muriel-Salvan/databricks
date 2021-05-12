@@ -1,3 +1,9 @@
+# [v2.2.0](https://github.com/Muriel-Salvan/databricks/compare/v2.1.0...v2.2.0) (2021-05-12 13:46:40)
+
+### Features
+
+* [[Feature] Support DBFS read](https://github.com/Muriel-Salvan/databricks/commit/bf5cb1c01d890f28de7749c0694b887f1f1f237a)
+
 # [v2.1.0](https://github.com/Muriel-Salvan/databricks/compare/v2.0.0...v2.1.0) (2021-02-24 16:41:20)
 
 ### Features
