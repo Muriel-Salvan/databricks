@@ -1,3 +1,4 @@
+require 'base64'
 require 'tempfile'
 require 'databricks/resources/dbfs'
 
@@ -55,6 +56,24 @@ describe Databricks::Resources::Dbfs do
       with(body: { path: '/my_test/path', recursive: true }).
       to_return(body: {}.to_json)
     expect { @api.delete('/my_test/path', recursive: true) }.not_to raise_error
+  end
+
+  it 'reads a file' do
+    mocked_content = 'This is a test content'
+    stub_request(:get, 'https://my_databricks_instance.my_domain.com/api/2.0/dbfs/read').
+      with(body: {
+        path: '/my_test/path',
+        offset: 0,
+        length: 524_288
+      }).
+      to_return(body: {
+        bytes_read: mocked_content.size,
+        data: Base64.encode64(mocked_content)
+      }.to_json)
+    expect(@api.read('/my_test/path')).to eq(
+      'bytes_read' => mocked_content.size,
+      'data' => mocked_content
+    )
   end
 
 end

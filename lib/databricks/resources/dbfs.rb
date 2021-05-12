@@ -1,3 +1,5 @@
+require 'base64'
+
 module Databricks
 
   module Resources
@@ -45,6 +47,28 @@ module Databricks
             recursive: recursive
           }
         )
+      end
+
+      # Read a file.
+      # Decodes the content in the json response (that is originally Base64-encoded).
+      #
+      # Parameters::
+      # * *path* (String): Path to the file to read
+      # * *offset* (Integer): Offset to read from [default: 0]
+      # * *length* (Integer): Number of nytes to read from (max 1MB) [default: 524_288]
+      def read(path, offset: 0, length: 524_288)
+        raw_json = get_json(
+          'dbfs/read',
+          {
+            path: path,
+            offset: offset,
+            length: length
+          }
+        )
+        {
+          'bytes_read' => raw_json['bytes_read'],
+          'data' => Base64.decode64(raw_json['data'])
+        }
       end
 
     end
