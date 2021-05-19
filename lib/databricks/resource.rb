@@ -15,6 +15,10 @@ module Databricks
       post_json
     ]
 
+    # Get an accessor on all properties of this resource
+    # Hash< Symbol, Object >
+    attr_reader :properties
+
     # Declare sub-resources accessors.
     # This will make sure this resource has methods named after the sub-resources identifiers.
     #
@@ -42,20 +46,27 @@ module Databricks
       @properties = {}
     end
 
-    # Add/replace properties for this resource
+    # Add/replace properties for this resource.
+    # Properties will be deep-symbolized.
     #
     # Parameters::
-    # * *properties* (Hash<Symbol,Object>): Properties for this resource
-    def add_properties(properties)
+    # * *properties* (Hash<Symbol or String,Object>): Properties for this resource
+    # * *replace* (Boolean): Should we replace properties instead of merging them? [default: false]
+    def add_properties(properties, replace: false)
+      symbolized_properties = deep_symbolize(properties)
       # Define getters for properties
-      (properties.keys - @properties.keys).each do |property_name|
+      (symbolized_properties.keys - @properties.keys).each do |property_name|
         if self.respond_to?(property_name)
           raise "Can't define a property named #{property_name} - It's already used."
         else
           define_singleton_method(property_name) { @properties[property_name] }
         end
       end
-      @properties.merge!(properties)
+      if replace
+        @properties = symbolized_properties
+      else
+        @properties.merge!(symbolized_properties)
+      end
     end
 
     # Return a simple string representation of this resource
@@ -88,8 +99,32 @@ module Databricks
     def new_resource(resource_name, properties = {})
       require "#{__dir__}/resources/#{resource_name}.rb"
       resource = Resources.const_get(resource_name.to_s.split('_').collect(&:capitalize).join.to_sym).new(@connector)
-      resource.add_properties(properties.transform_keys(&:to_sym))
+      resource.add_properties(properties)
       resource
+    end
+
+    private
+
+    # Deep-symbolize a JSON object
+    #
+    # Parameters::
+    # * *json* (Object): The JSON object
+    # Result::
+    # * Object: Symbolized JSON object
+    def deep_symbolize(json)
+      case json
+      when Hash
+        Hash[json.map do |k, v|
+          [
+            k.is_a?(String) ? k.to_sym : k,
+            deep_symbolize(v)
+          ]
+        end]
+      when Array
+        json.map { |e| deep_symbolize(e) }
+      else
+        json
+      end
     end
 
   end

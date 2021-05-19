@@ -54,6 +54,7 @@ databricks.dbfs.list('/').each do |file|
 end
 
 databricks.dbfs.put('/dbfs_path/to/file.txt', 'local_file.txt')
+puts databricks.dbfs.read('/dbfs_path/to/file.txt')['data']
 databricks.dbfs.delete('/dbfs_path/to/file.txt')
 
 # ===== Clusters
@@ -77,10 +78,10 @@ new_cluster.delete
 # ===== Jobs
 
 databricks.jobs.list.each do |job|
-  puts "Found job with id #{job.job_id}"
+  puts "Found job #{job.name} with id #{job.job_id}"
 end
 
-new_job = job.create(
+new_job = databricks.jobs.create(
   name: 'My new job',
   new_cluster: {
     spark_version: '7.3.x-scala2.12',
@@ -97,6 +98,26 @@ new_job = job.create(
     main_class_name: 'com.databricks.ComputeModels'
   }
 )
+puts "Job created with id #{new_job.job_id}"
+new_job.reset(
+  new_cluster: {
+    spark_version: '7.3.x-scala2.12',
+    node_type_id: 'r3.xlarge'
+    num_workers: 10
+  },
+  libraries: [
+    {
+      jar: 'dbfs:/my-jar.jar'
+    }
+  ],
+  timeout_seconds: 3600,
+  spark_jar_task: {
+    main_class_name: 'com.databricks.ComputeModels'
+  }
+)
+new_job.delete
+# Get a job from its job_id
+found_job = databricks.jobs.get(666)
 
 # ===== Instance pools
 
@@ -112,6 +133,8 @@ new_instance_pool = databricks.instance_pools.create(
 )
 new_instance_pool.edit(min_idle_instances: 5)
 new_instance_pool.delete
+# Get an instance pool from its instance_pool_id
+found_pool = databricks.instance_pools.get('my-pool-id')
 
 ```
 
