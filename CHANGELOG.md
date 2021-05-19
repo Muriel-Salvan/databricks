@@ -1,3 +1,9 @@
+# [v2.3.0](https://github.com/Muriel-Salvan/databricks/compare/v2.2.0...v2.3.0) (2021-05-19 13:38:23)
+
+### Features
+
+* [[Feature] Support jobs get, reset and delete APIs](https://github.com/Muriel-Salvan/databricks/commit/f7c1acbdf981d0b07b8f2de02ca0c66a9008d3d8)
+
 # [v2.2.0](https://github.com/Muriel-Salvan/databricks/compare/v2.1.0...v2.2.0) (2021-05-12 13:46:40)
 
 ### Features
