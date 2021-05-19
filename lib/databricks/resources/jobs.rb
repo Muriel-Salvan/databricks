@@ -11,7 +11,21 @@ module Databricks
       # Result::
       # * Array<Job>: List of jobs information
       def list
-        (get_json('jobs/list')['jobs'] || []).map { |properties| new_resource(:job, properties) }
+        (get_json('jobs/list')['jobs'] || []).map do |properties|
+          # The settings property should be merged at root
+          new_resource(:job, properties.merge(properties.delete('settings')))
+        end
+      end
+
+      # Get a job based on its job_id
+      #
+      # Parameters::
+      # * *job_id* (String): The job id to get
+      # Result::
+      # * Job: The job
+      def get(job_id)
+        properties = get_json('jobs/get', { job_id: job_id })
+        new_resource(:job, properties.merge(properties.delete('settings')))
       end
 
       # Create a new job.
