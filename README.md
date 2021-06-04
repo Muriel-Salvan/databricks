@@ -102,7 +102,7 @@ puts "Job created with id #{new_job.job_id}"
 new_job.reset(
   new_cluster: {
     spark_version: '7.3.x-scala2.12',
-    node_type_id: 'r3.xlarge'
+    node_type_id: 'r3.xlarge',
     num_workers: 10
   },
   libraries: [
