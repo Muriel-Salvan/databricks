@@ -1,3 +1,9 @@
+# [v2.3.1](https://github.com/Muriel-Salvan/databricks/compare/v2.3.0...v2.3.1) (2021-06-04 09:19:47)
+
+### Patches
+
+* [[Hotfix] Removed useless dependency](https://github.com/Muriel-Salvan/databricks/commit/1703f5887d0bdad3a768a365877676edeec8cab4)
+
 # [v2.3.0](https://github.com/Muriel-Salvan/databricks/compare/v2.2.0...v2.3.0) (2021-05-19 13:38:23)
 
 ### Features
